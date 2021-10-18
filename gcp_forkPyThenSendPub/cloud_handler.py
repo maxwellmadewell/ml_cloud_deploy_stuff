@@ -70,7 +70,7 @@ class CloudLoggingHandler(logging.Handler):
         if project_id is None:
             if not on_gce:
                 raise ValueError(
-                    "project_id needs to be provided if not running on GCE")
+                    "PROJECT needs to be provided if not running on GCE")
             else:
                 resp, self.project_id = http.request(
                     METADATA_SERVER % "project/project-id",

@@ -1,4 +1,4 @@
-#!/usr/bin/env/python
+#!/usr/bin/env python
 
 # Copyright 2015 Google Inc. All Rights Reserved.
 
@@ -24,35 +24,37 @@ import sys
 import subprocess
 from google.cloud import pubsub_v1
 
-project_id = "myinstancepubsubapp"
-topic_id = "stop-instance-event"
-imagename = "hello-world"
+# TODO - update PROJECT, TOPIC (stop instance after pipeline finishes), STARTAPP
 
-print(f"[DOCKER] Starting container: {imagename}")
+PROJECT = "myinstancepubsubapp"
+TOPIC = "stop-instance-event"
+IMAGE = "hello-world"
 
-p = subprocess.Popen(['docker', 'run', imagename], shell=False)
+print(f"[DOCKER] Starting container: {IMAGE}")
+
+p = subprocess.Popen(['docker', 'run', IMAGE], shell=False)
 print("--------------------")
 print("****")
-print(f"Child Process PID: {p.pid}")
+print(f"[DOCKER] Child Process PID: {p.pid}")
 print("****")
 os.system(f"ps -p {p.pid}")
 os.waitpid(p.pid, 0)
 print("--------------------")
 
 publisher = pubsub_v1.PublisherClient()
-# fully qualified identifier - `projects/{project_id}/topics/{topic_id}`
-topic_path = publisher.topic_path(project_id, topic_id)
+# fully qualified identifier - `projects/{PROJECT}/topics/{TOPIC}`
+topic_path = publisher.topic_path(PROJECT, TOPIC)
 print(f"[GCP] - Attempting Publish to: {topic_path}")
 
 #Example message data - not required to initiate cloud function
-msg_data = imagename
+msg_data = IMAGE
 
 # Data requirement - bytestring
 msg_data = msg_data.encode("utf-8")
 
 # When publishing to Google Client returns a future.
 future = publisher.publish(topic_path, msg_data)
-print(f"Google Client Future response: {future.result}")
-print(f"Published messages to {topic_path}.")
+print(f"[GCP] = Future response from client: {future.result}")
+print(f"[GCP] Published messages to {topic_path}.")
 
 sys.exit(0)

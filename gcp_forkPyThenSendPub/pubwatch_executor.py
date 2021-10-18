@@ -13,12 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Creates a logging handler and Pub Watcher to continually
+watch for published TOPIC within a PROJECT (updated by dev)
 
 """
-This sample script shows how to use the reusable Executor utility to
-watch a topic and execute a command when a message is received
-"""
-
 import logging
 import os
 import sys
@@ -26,12 +25,15 @@ import sys
 from cloud_handler import CloudLoggingHandler
 from cron_executor import Executor
 
+# TODO - update PROJECT, TOPIC (start docker image pipeline), STARTAPP (fork/waits py containers)
 PROJECT = 'myinstancepubsubapp'  # change this to match your project
-TOPIC = 'runPredEngine'
+TOPIC = 'start-ce-pipeline'
+STARTAPP = 'start_pipeline_task.py'
 
-script_path = os.path.abspath(os.path.join(os.getcwd(), 'run_pycontainer_task.py'))
+script_path = os.path.abspath(os.path.join(os.getcwd(), STARTAPP))
 
-pycontainer_task = "python -u %s" % script_path
+#unbuffer - not sure it matters though
+start_pipeline = "python -u %s" % script_path
 
 
 root_logger = logging.getLogger('cron_executor')
@@ -47,7 +49,7 @@ cloud_handler = CloudLoggingHandler(on_gce=True, logname="task_runner")
 root_logger.addHandler(cloud_handler)
 
 # create the executor that watches the topic, and will run the job task
-pub_executor = Executor(topic=TOPIC, project=PROJECT, task_cmd=pycontainer_task, subname='pycontainer_task')
+pub_executor = Executor(topic=TOPIC, project=PROJECT, task_cmd=start_pipeline, subname='start_pipeline_task')
 
 # add a cloud logging handler and stderr logging handler
 job_cloud_handler = CloudLoggingHandler(on_gce=True, logname=pub_executor.subname)
