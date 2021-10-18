@@ -47,14 +47,14 @@ cloud_handler = CloudLoggingHandler(on_gce=True, logname="task_runner")
 root_logger.addHandler(cloud_handler)
 
 # create the executor that watches the topic, and will run the job task
-test_executor = Executor(topic=TOPIC, project=PROJECT, task_cmd=pycontainer_task, subname='pycontainer_task')
+pub_executor = Executor(topic=TOPIC, project=PROJECT, task_cmd=pycontainer_task, subname='pycontainer_task')
 
 # add a cloud logging handler and stderr logging handler
-job_cloud_handler = CloudLoggingHandler(on_gce=True, logname=test_executor.subname)
-test_executor.job_log.addHandler(job_cloud_handler)
-test_executor.job_log.addHandler(ch)
-test_executor.job_log.setLevel(logging.DEBUG)
+job_cloud_handler = CloudLoggingHandler(on_gce=True, logname=pub_executor.subname)
+pub_executor.job_log.addHandler(job_cloud_handler)
+pub_executor.job_log.addHandler(ch)
+pub_executor.job_log.setLevel(logging.DEBUG)
 
 
 # watches indefinitely
-test_executor.watch_topic()
+pub_executor.watch_topic()

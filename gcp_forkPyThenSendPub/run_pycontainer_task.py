@@ -1,4 +1,4 @@
-#!/usr/bin/env/ python
+#!/usr/bin/env/python
 
 # Copyright 2015 Google Inc. All Rights Reserved.
 
@@ -29,12 +29,15 @@ topic_id = "stop-instance-event"
 imagename = "hello-world"
 
 print(f"[DOCKER] Starting container: {imagename}")
-try:
-    p = subprocess.Popen(['docker', 'run', imagename], shell=True)
-    print(f"[SUBPROCESS]: Child PID: {p.pid}")
-except:
-    print(f"[DOCKER] - Error starting docker image.")
-    pass
+
+p = subprocess.Popen(['docker', 'run', imagename], shell=False)
+print("--------------------")
+print("****")
+print(f"Child Process PID: {p.pid}")
+print("****")
+os.system(f"ps -p {p.pid}")
+os.waitpid(p.pid, 0)
+print("--------------------")
 
 publisher = pubsub_v1.PublisherClient()
 # fully qualified identifier - `projects/{project_id}/topics/{topic_id}`
