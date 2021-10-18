@@ -25,6 +25,7 @@ import sys
 from cloud_handler import CloudLoggingHandler
 from cron_executor import Executor
 
+
 # TODO - update PROJECT, TOPIC (start docker image pipeline), STARTAPP (fork/waits py containers)
 PROJECT = 'myinstancepubsubapp'  # change this to match your project
 TOPIC = 'start-ce-pipeline'
