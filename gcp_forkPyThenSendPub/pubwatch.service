@@ -1,11 +1,11 @@
 [Unit]
-Description=My test service
+Description=GCP Pub Watcher
 After=multi-user.target
 
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/python3 /home/mxmcoursey/pubwatch_executor.py
+ExecStart=/usr/bin/python3 /home/mxmcoursey/gcp_forkPyThenSendPub/pubwatch_executor.py
 
 [Install]
 WantedBy=multi-user.target

@@ -15,46 +15,39 @@
 # limitations under the License.
 
 """
-This is simply an example task, meant to replace an executable bit of code
-that does work on your system
+Update PROJECT, TOPIC (stop instance after pipeline finishes), MSG must
+have zone and label associated with Instance to stop.
 """
-import time
 import os
 import sys
 import subprocess
+import json
 from google.cloud import pubsub_v1
-
-# TODO - update PROJECT, TOPIC (stop instance after pipeline finishes), STARTAPP
 
 PROJECT = "myinstancepubsubapp"
 TOPIC = "stop-instance-event"
 IMAGE = "hello-world"
+MSG = {"zone": "us-west1-b", "label": "env=dev"}
 
-print(f"[DOCKER] Starting container: {IMAGE}")
+print("[DOCKER] Starting container: {}".format(IMAGE))
 
 p = subprocess.Popen(['docker', 'run', IMAGE], shell=False)
+print("[DOCKER] Child Process, {},  PID: {}".format(IMAGE, p.pid))
 print("--------------------")
-print("****")
-print(f"[DOCKER] Child Process PID: {p.pid}")
-print("****")
-os.system(f"ps -p {p.pid}")
+os.system("ps -p {}".format(p.pid))
 os.waitpid(p.pid, 0)
 print("--------------------")
 
 publisher = pubsub_v1.PublisherClient()
 # fully qualified identifier - `projects/{PROJECT}/topics/{TOPIC}`
 topic_path = publisher.topic_path(PROJECT, TOPIC)
-print(f"[GCP] - Attempting Publish to: {topic_path}")
-
-#Example message data - not required to initiate cloud function
-msg_data = IMAGE
+print("[GCP] - Attempting Publish to: {}".format(topic_path))
 
 # Data requirement - bytestring
-msg_data = msg_data.encode("utf-8")
-
-# When publishing to Google Client returns a future.
-future = publisher.publish(topic_path, msg_data)
-print(f"[GCP] = Future response from client: {future.result}")
-print(f"[GCP] Published messages to {topic_path}.")
+json_msg = json.dumps(MSG)
+publish_future = publisher.publish(topic_path, json_msg.encode("utf-8"))
+print(publish_future.result())
+print("[GCP] = Future response from client: {}".format(publish_future.result()))
+print("[GCP] Published messages to {}.".format(topic_path))
 
 sys.exit(0)

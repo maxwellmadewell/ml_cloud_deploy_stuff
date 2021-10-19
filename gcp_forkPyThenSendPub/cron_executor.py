@@ -26,7 +26,7 @@ try:
 except ImportError:
     from queue import Queue, Empty  # python 3.x
 
-from apiclient import discovery
+from googleapiclient import discovery
 from apiclient.errors import HttpError
 import httplib2
 from oauth2client.client import GoogleCredentials
