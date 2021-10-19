@@ -5,6 +5,7 @@ After=multi-user.target
 [Service]
 Type=simple
 Restart=always
+User=mxmcoursey
 ExecStart=/usr/bin/python3 /home/mxmcoursey/gcp_forkPyThenSendPub/pubwatch_executor.py
 
 [Install]
